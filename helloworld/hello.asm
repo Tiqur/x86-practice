@@ -6,14 +6,18 @@ section .data ;Immutable data
   len equ $ -msg  ;length of string
 
 section .text
-_start:
+  _start:
+    
+    call _printHello
 
-mov edx, len
-mov ecx, msg
-mov ebx, 1
-mov eax, 4
-int 0x80
+    mov rax, 60
+    mov rdi, 0
+    syscall
 
-mov ebx, 0
-mov eax, 1
-int 0x80
+  _printHello:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, msg
+    mov rdx, len
+    syscall
+    ret
