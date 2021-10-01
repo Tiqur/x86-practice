@@ -5,15 +5,14 @@
   syscall
 %endmacro
 
-; Print individual digit
-%macro printDigit 1
+; Print ascii character
+%macro printASCII 1
     mov rax, %1
-    add rax, 48           ; increment rax by 48
-    mov [digit], al       ; move least significant byte into 'digit'
-    mov rax, 1            ; sys_write
-    mov rdi, 1            ; set file descriptor
-    mov rsi, digit        ; set text
-    mov rdx, 2            ; set text length ( 2 bytes since 2nd is always 10 ( new line ) )
+    mov [digit], al    ; move least significant byte into 'digit'
+    mov rax, 1         ; sys_write
+    mov rdi, 1         ; set file descriptor
+    mov rsi, digit     ; set text
+    mov rdx, 2         ; set text length ( 2 bytes since 2nd is always 10 ( new line ) )
     syscall
 %endmacro
 
@@ -29,6 +28,7 @@
     mov rsi, 10       ; move 10 into rsi
     div rsi           ; rax = (rax / 10) rdx = (rax % 10)
 
+    add rdx, 48       ; increment rdx by 48
     push rdx          ; push digit to stack
 
     cmp rax, 0        ; compare rax and 0
@@ -37,12 +37,12 @@
   ; Print each digit
   %%_printLoop:
       pop rax         ; pop stack into rax
-      printDigit rax  ; call printDigit
+      printASCII rax  ; call printDigit
       dec r8          ; ( cl = cl - 1 )
       cmp r8, 0       ; compare cl and 0
     jg %%_printLoop   ; jump to _printLoop if rax >= 0
 
-    printDigit -38    ; Print newline
+    printASCII 10     ; Print newline
 
 %endmacro
 
